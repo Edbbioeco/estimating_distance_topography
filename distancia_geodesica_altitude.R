@@ -73,6 +73,11 @@ ggplot() +
   geom_sf(data = apa, fill = NA) +
   geom_sf(data = pontos)
 
+### Exportando ----
+
+topo |>
+  terra::writeRaster("topo_aldeia_beribe.tif")
+
 # Distâncias ----
 
 ## Distância geodésica simples ----
@@ -112,8 +117,7 @@ ggplot() +
 
 alt_alea <- topo |>
   terra::extract(pontos |> sf::st_as_sf()) |>
-  dplyr::rename("Altitude" = 2) |>
-  dplyr::mutate(Altitude = Altitude |> as.numeric)
+  dplyr::rename("Altitude" = 2)
 
 alt_alea
 
@@ -121,8 +125,7 @@ alt_alea
 
 alt_prox <- topo |>
   terra::extract(near_dist |> sf::st_as_sf()) |>
-  dplyr::rename("Altitude" = 2) |>
-  dplyr::mutate(Altitude = Altitude |> as.numeric)
+  dplyr::rename("Altitude" = 2)
 
 alt_prox
 
@@ -155,4 +158,8 @@ dist
 
 dist |>
   ggplot(aes(`Tipo de distância`, Distância, fill = `Tipo de distância`)) +
-  ggbeeswarm::geom_quasirandom(shape = 21, stroke = 1, size = 5, color = "black")
+  ggbeeswarm::geom_quasirandom(shape = 21, stroke = 1,
+                               size = 5, color = "black") +
+  scale_fill_manual(values = c("orange", "royalblue")) +
+  theme_classic()
+
